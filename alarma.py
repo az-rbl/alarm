@@ -18,8 +18,9 @@ class monitor():
         self.cv = threading.Condition(lock=self.lock)
     
     def modify_file(self):
-        self.file=filedialog.askopenfile()
-        if file != '':
+        self.file=filedialog.askopenfilename()
+        print(self.file)
+        if self.file != '':
             with self.cv:
                 self.cv.notify_all()
     
