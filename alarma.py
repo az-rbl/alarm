@@ -13,15 +13,31 @@ freq = 440  # Hz
 class monitor():
     def __init__(self):
         self.file =''
-        self.stopped = False
+        self.running = True
+        self.lock = threading.Lock()
+        self.cv = threading.Condition(lock=self.lock)
     
-    def modify_file():
-        pass
+    def modify_file(self):
+        self.file=filedialog.askopenfile()
+        if file != '':
+            with self.cv:
+                self.cv.notify_all()
+    
+    def modify_running(self):
+        self.running = not self.running
+    
+    def read_file(self):
+        self.cv.acquire()
+        while self.file == '':
+            self.cv.wait()
+        self.cv.release()
+        return self.file
 
-def buzz(file,stop):
-    while(True):
+
+def buzz(monitor:monitor):
+    while(monitor.running==True):
         time.sleep(2)
-        objeto = pyautogui.locateOnScreen(r"C:\Users\lnvo\Documents\so\alarm\objeto.png")
+        objeto = pyautogui.locateOnScreen(monitor.read_file())
         print("1")
         if(objeto !=None ): 
             print("objeto encontrado")
@@ -29,13 +45,13 @@ def buzz(file,stop):
         global stop_threads
         if stop_threads:
             break
-def gui(file,stop):
-    f=''
+
+def gui(monitor:monitor):
     root=tkinter.Tk()
     root.title("Alarma")
-    button1 =tkinter.Button(root, text = 'parar', width="25", command=root.destroy)
+    button1 =tkinter.Button(root, text = 'parar', width="25", command=monitor.modify_running)
     button1.pack()
-    button2 =tkinter.Button(root, text ='Examinar', command=file )
+    button2 =tkinter.Button(root, text ='Examinar', command=monitor.modify_file )
     button2.pack()
     root.mainloop()
     
@@ -47,11 +63,11 @@ def fin(r,x):
     r.destroy
     x.join
 
-
+mo = monitor()
 stop_threads = False
-x = threading.Thread(target=buzz, daemon=True)
+x = threading.Thread(target=buzz, args =[mo], daemon=True)
 x.start()
-window = threading.Thread(target=gui,daemon=True)
+window = threading.Thread(target=gui, args=[mo] ,daemon=True)
 window.start()
 #stop_threads =True
 x.join()
