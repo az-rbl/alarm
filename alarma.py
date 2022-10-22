@@ -37,12 +37,12 @@ class monitor():
 
 def buzz(monitor:monitor):
     while(monitor.running==True):
-        time.sleep(2)
         objeto = pyautogui.locateOnScreen(monitor.read_file())
         print("1")
         if(objeto !=None ): 
             print("objeto encontrado")
             winsound.Beep(freq, duration)
+        time.sleep(2)
         global stop_threads
         if stop_threads:
             break
