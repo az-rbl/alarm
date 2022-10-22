@@ -42,7 +42,7 @@ def buzz(monitor:monitor):
         if(objeto !=None ): 
             print("objeto encontrado")
             winsound.Beep(freq, duration)
-        time.sleep(2)
+        #time.sleep(0.5)
         global stop_threads
         if stop_threads:
             break
@@ -56,13 +56,6 @@ def gui(monitor:monitor):
     button2.pack()
     root.mainloop()
     
-    
-def file(file,stop):
-    file=filedialog.askopenfile()
-
-def fin(r,x):
-    r.destroy
-    x.join
 
 mo = monitor()
 stop_threads = False
@@ -73,7 +66,3 @@ window.start()
 #stop_threads =True
 x.join()
 sys.exit()
-
-
-
-
